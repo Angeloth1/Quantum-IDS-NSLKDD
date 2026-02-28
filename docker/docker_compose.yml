@@ -1,0 +1,11 @@
+version: '3.8'
+services:
+  quantum-ids:
+    build: .
+    ports:
+      - "8888:8888"
+    volumes:
+      - .:/app
+      - ./data:/app/data  # Συνδέει τα τοπικά δεδομένα με το container
+    environment:
+      - JUPYTER_TOKEN=quantum_thesis # Ο κωδικός για να μπεις στο notebook
