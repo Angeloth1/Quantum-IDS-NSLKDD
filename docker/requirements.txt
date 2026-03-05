@@ -1,18 +1,11 @@
-# === Data Manipulation & Preprocessing ===
 pandas
 numpy
 scikit-learn
-
-# === Visualization (Για τα γραφήματα του paper) ===
 matplotlib
 seaborn
-
-# === Quantum Machine Learning (Qiskit Ecosystem) ===
 qiskit
 qiskit-aer
 qiskit-machine-learning
 qiskit-algorithms
 pylatexenc
-
-# === Environment & Tooling ===
 jupyter
