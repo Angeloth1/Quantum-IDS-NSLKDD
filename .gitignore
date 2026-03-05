@@ -209,3 +209,11 @@ cython_debug/
 marimo/_static/
 marimo/_lsp/
 __marimo__/
+
+# Ενδιάμεσα και προετοιμασμένα αρχεία δεδομένων
+*.npz
+*.npy
+
+# Αποθηκευμένα κβαντικά μοντέλα
+models/
+*.model
