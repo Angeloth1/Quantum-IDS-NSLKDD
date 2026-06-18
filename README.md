@@ -1,75 +1,70 @@
-# ⚛️ Quantum Intrusion Detection System (QIDS)
+# Quantum Intrusion Detection System (QIDS): Evaluating VQCs in the NISQ Era
 
-Αυτό το αποθετήριο (repository) περιέχει τον πηγαίο κώδικα και τα πειραματικά δεδομένα της πτυχιακής έρευνας με θέμα την αξιολόγηση της **Κβαντικής Μηχανικής Μάθησης (Quantum Machine Learning - QML)** για την ανίχνευση δικτυακών εισβολών. 
+This repository contains the source code, data preprocessing pipelines, and experimental results for evaluating the structural limits of Variational Quantum Classifiers (VQC) in cybersecurity. Specifically, it investigates the application of Quantum Machine Learning (QML) for network anomaly detection using the **NSL-KDD** dataset.
 
-Η έρευνα αξιολογεί τα όρια των Variational Quantum Classifiers (VQC) στο περιβάλλον των σύγχρονων Noisy Intermediate-Scale Quantum (NISQ) συστημάτων, χρησιμοποιώντας το αυστηρό benchmark του **NSL-KDD dataset**.
-
----
-
-## 📑 Πίνακας Περιεχομένων
-1. [🎯 Σκοπός της Έρευνας](#-σκοπός-της-έρευνας)
-2. [🛠️ Αρχιτεκτονική & Μεθοδολογία](#️-αρχιτεκτονική--μεθοδολογία)
-3. [📊 Βασικά Ευρήματα (Key Findings)](#-βασικά-ευρήματα-key-findings)
-4. [💻 Τεχνολογικό Stack](#-τεχνολογικό-stack)
-5. [🚀 Οδηγίες Εγκατάστασης (Local Setup)](#-οδηγίες-εγκατάστασης-local-setup)
+This research was developed at the Department of Informatics, Ionian University, exploring hybrid quantum-classical computing applications in intrusion detection systems.
 
 ---
 
-## 🎯 Σκοπός της Έρευνας
-Ο κύριος στόχος είναι η διερεύνηση της πρακτικής αποδοτικότητας των κβαντικών αλγορίθμων στην ταξινόμηση κακόβουλης δικτυακής κίνησης. Η έρευνα εστιάζει στην **"Κβαντική Οικονομία" (Quantum Economy)**: πώς μπορούμε να συμπιέσουμε μαθηματικά την πληροφορία ενός πολύπλοκου dataset, ώστε να εκτελεστεί σε περιορισμένα Qubits, χωρίς να καταστραφεί η γραμμική διαχωρισιμότητα των δεδομένων.
+## 📖 Overview
+
+As network-based attacks grow in complexity, classical Intrusion Detection Systems (IDS) face continuous challenges. While QML offers theoretical exponential advantages through high-dimensional Hilbert spaces, the physical realities of the Noisy Intermediate-Scale Quantum (NISQ) era impose strict hardware constraints. 
+
+This project specifically isolates the **Quantum Bottleneck** caused by **Amplitude Encoding**. By compressing 16 classical features into a restricted 4-qubit register and benchmarking two distinct optimizers (COBYLA and SPSA), we evaluate whether performance ceilings are artifacts of the optimization landscape or fundamental limits of the geometric encoding itself.
+
+### Key Findings
+* **VQC Performance:** Both deterministic (COBYLA) and stochastic (SPSA) optimizers plateaued at an **88% accuracy** in binary classification (Normal vs. Attack).
+* **Optimization vs. Expressivity:** The identical convergence of two fundamentally different optimizers confirms that the performance ceiling is an architectural limit of the 4-qubit amplitude compression, not a failure to escape local minima.
+* **Classical Parity Benchmark:** A highly constrained classical neural network (a "Tiny MLP") utilizing exactly 4 hidden nodes—architecturally analogous to the 4-qubit space—achieved **97% accuracy** using the exact same compressed input, highlighting the expressiveness gap caused by linear quantum unitary transformations under extreme compression.
+* **Mode Collapse in Multiclass:** When exposed to a perfectly balanced 4-class dataset (DoS, Probe, R2L, U2R), the VQC suffered a degenerate mode collapse, achieving only **9% accuracy**. This demonstrates that aggressive probability amplitude compression destroys the linear separability of complex, entangled attack vectors.
 
 ---
 
-## 🛠️ Αρχιτεκτονική & Μεθοδολογία
-Η στρατηγική του pipeline μας σχεδιάστηκε για να μετριάσει το "Quantum Bottleneck" και περιλαμβάνει:
+## ⚙️ Methodology & Architecture
 
-* **Αυστηρό Data Preprocessing:** Καθαρισμός και διπλό Stratified Split (βάσει Label & `src_bytes` - Μεγέθους Πακέτου) για αποτροπή distribution shift.
-* **Leakage-Free Feature Engineering:** Αντικατάσταση του One-Hot Encoding με **Target Encoding** αποκλειστικά στο Training Set, μειώνοντας την αραιότητα (sparsity) των πινάκων.
-* **Dimensionality Reduction (PCA-16):** Εξαγωγή ακριβώς 16 κύριων συνιστωσών (διατηρώντας το 86.78% της διακύμανσης).
-* **Κβαντική Αρχιτεκτονική:**
-    * **Amplitude Encoding:** Ενσωμάτωση των 16 χαρακτηριστικών σε μόλις **4 Qubits** ($2^4=16$).
-    * **Ansatz:** Χρήση του `RealAmplitudes` (reps=5) με 24 εκπαιδεύσιμες παραμέτρους.
-* **Στρατηγική Βελτιστοποίησης:** Συγκριτική αξιολόγηση μεταξύ ντετερμινιστικών (COBYLA) και στοχαστικών, ανθεκτικών στον θόρυβο (SPSA) optimizers για την αποφυγή των Barren Plateaus.
+### 1. Data Preprocessing
+* **Dataset:** NSL-KDD (20% Research Subset).
+* **Target Encoding:** Replaced highly sparse categorical features (like protocol type and payload size) with semantic risk probabilities to ensure "Quantum Economy" and avoid the dimensionality explosion of One-Hot Encoding.
+* **Dimensionality Reduction:** Classical PCA was utilized to extract exactly 16 principal components (retaining ~86.78% variance).
+* **Normalization:** Strict L2 normalization was applied to the feature vectors to satisfy the quantum probability conservation postulate ($\sum |x_i|^2 = 1$), a strict prerequisite for Amplitude Encoding.
 
----
-
-## 📊 Βασικά Ευρήματα (Key Findings)
-Τα πειράματα κατέδειξαν με σαφήνεια τα όρια της Κωδικοποίησης Πλάτους (Amplitude Encoding) στα σημερινά NISQ συστήματα:
-
-1.  **Δυαδική Ταξινόμηση (Binary Classification):** Το 4-qubit VQC πέτυχε ένα σταθερό **88% Accuracy**, λειτουργώντας ως ένα ικανοποιητικό proof-of-concept.
-2.  **Κλασικό Benchmark (The Bottleneck):** Ένα κλασικό, αυστηρά περιορισμένο "Tiny MLP" με μόλις 4 κόμβους στο hidden layer, ξεπέρασε το VQC επιτυγχάνοντας **97%**. Αυτό αποδεικνύει ότι τα δεδομένα διατηρούν τη σημασιολογία τους, αλλά τα κβαντικά μοντέλα δυσκολεύονται λόγω των αποκλειστικά γραμμικών, μοναδιαίων (unitary) μετασχηματισμών τους.
-3.  **Πολυταξική Ταξινόμηση (Multiclass Mode Collapse):** Σε ένα απόλυτα ισορροπημένο dataset 4 κλάσεων επιθέσεων, η ακρίβεια του VQC κατέρρευσε στο **9%** (κάτω από το τυχαίο 25%). Αυτό αποδεικνύει ότι η υπερ-συμπίεση πολλαπλών χαρακτηριστικών σε 4 qubits καταστρέφει ανεπανόρθωτα τη γεωμετρία διαχωρισμού σύνθετων επιθέσεων.
+### 2. Quantum Circuit Design
+* **State Preparation:** Amplitude Encoding mapping 16 PCA components into the probability amplitudes of 4 qubits ($2^4 = 16$).
+* **Trainable Ansatz:** `RealAmplitudes` architecture with 5 repetitions (`reps=5`), yielding robust linear entanglement topologies and exactly 24 trainable parameters.
+* **Measurement:** Z-basis measurement utilizing a Parity Mapping function to collapse the 4-bit probability distribution into a binary classification outcome.
 
 ---
 
-## 💻 Τεχνολογικό Stack
-* **Γλώσσα:** Python 3.10+
-* **Κβαντικό Framework:** IBM Qiskit (Aer Simulator, Machine Learning, Algorithms)
-* **Data Science:** Scikit-Learn, Pandas, NumPy
-* **Οπτικοποίηση:** Matplotlib, Seaborn
+## 📂 Repository Structure
 
----
+```text
+├── data/                   # Raw and preprocessed NSL-KDD datasets (.txt, .csv)
+├── models/                 # Saved VQC (dill) and classical models
+├── npz/                    # Serialized L2-normalized numpy arrays for fast loading
+├── notebooks/              # Jupyter notebooks containing the core logic
+├── README.md               # Project documentation
+```
+## 🚀 Installation & Reproducibility
 
-## 🚀 Οδηγίες Εγκατάστασης (Local Setup)
+To ensure strict reproducibility, the environment relies on the IBM Qiskit ecosystem and standard Python data science libraries. 
 
-Το project εκτελείται ιδανικά σε περιβάλλον Linux, κάνοντας χρήση Python Virtual Environments.
+**Prerequisites:**
+* Python 3.10+
+* Qiskit (and `qiskit-aer` for statevector simulation)
+* `qiskit-machine-learning`, `qiskit-algorithms`
+* Scikit-Learn, Pandas, NumPy, Matplotlib, Seaborn
 
-### 1. Λήψη του Dataset
-Λόγω μεγέθους, το NSL-KDD dataset δεν περιλαμβάνεται στο repo. 
-* Κατεβάστε το από το [University of New Brunswick (UNB)](https://www.unb.ca/cic/datasets/nsl.html).
-* Τοποθετήστε τα αρχεία `.txt` (π.χ. `KDDTrain+.txt`, `KDDTest+.txt`) στον φάκελο `data/`.
-
-### 2. Κλωνοποίηση & Εγκατάσταση
-Ανοίξτε το terminal σας και εκτελέστε:
-
+**Step 1: Repository Setup**
 ```bash
-# Κλωνοποίηση του αποθετηρίου
+# Clone the repository
 git clone [https://github.com/Angeloth1/Quantum-IDS-NSLKDD.git](https://github.com/Angeloth1/Quantum-IDS-NSLKDD.git)
 cd Quantum-IDS-NSLKDD
 
-# Δημιουργία και ενεργοποίηση Virtual Environment (προαιρετικό αλλά προτεινόμενο)
-python -m venv venv
-source venv/bin/activate
-
-# Εγκατάσταση εξαρτήσεων
-pip install -r requirements.txt
+# Install required dependencies
+pip install qiskit qiskit-aer qiskit-machine-learning qiskit-algorithms scikit-learn pandas numpy matplotlib seaborn dill
+**Step 2: Dataset Acquisition**
+For academic integrity and storage constraints, the NSL-KDD dataset is not hosted directly in this repository. You must download it before running the notebooks:
+1. Visit the Kaggle repository: [NSL-KDD Dataset by Hassan](https://www.kaggle.com/datasets/hassan06/nslkdd)
+2. Download the archive and extract it.
+3. Place the `KDDTrain+_20Percent.txt` file inside the `data/` directory of this project.
+```
