@@ -104,19 +104,15 @@ The NSL-KDD dataset is not hosted directly in this repository.
 
 ---
 
-## 📌 Citing / Reproducibility Pin
+## 📌 Reproducibility
 
-For the exact, citable state of the code at the time of submission, refer to the following pinned tag/commit rather than the (potentially updated) branch heads above:
+Each result in the paper is reproduced by checking out the corresponding branch (see the [Branch-to-Experiment Map](#branch-to-experiment-map) above) and running its notebooks. The experiments live at the **head of each branch** — there is no separate pinned tag or commit to navigate to. Simply:
 
-- **Paper submission tag:** `<PLACEHOLDER: e.g. v1.0-submission>` — `https://github.com/Angeloth1/Quantum-IDS-NSLKDD/releases/tag/<PLACEHOLDER>`
-- **`main` branch commit SHA at submission time:** `<PLACEHOLDER: 7-or-40-char SHA>`
-- **`classificationFaild` branch commit SHA at submission time (9% headline result):** `<PLACEHOLDER: 7-or-40-char SHA>`
-- **`SMOTE` branch commit SHA at submission time (94% robustness check):** `<PLACEHOLDER: 7-or-40-char SHA>`
-- **`Quantum-encoding-amplitude` branch commit SHA (provenance only):** `<PLACEHOLDER: 7-or-40-char SHA>`
+```bash
+git checkout <branch-name>   # e.g. classificationFaild for the 9% multiclass result
+```
 
-> To find these: run `git log -1 --format=%H` on each branch right before submitting, or create an annotated tag per branch (`git tag -a classificationFaild-submission -m "pinned for JSAN submission"`) and reference the tag name instead of a raw SHA — tags are easier for reviewers to navigate to than bare commit hashes.
-
-The paper's Data Availability Statement should reference this pinned tag/commit (not just the bare repository URL) so that future changes to `main` do not silently invalidate the reproducibility claim.
+> **Note:** because the reported figures correspond to the current head of each branch, the branches should not be modified after submission if the published numbers are to remain reproducible.
 
 ---
 
