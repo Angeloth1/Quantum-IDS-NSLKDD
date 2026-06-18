@@ -119,3 +119,9 @@ git checkout <branch-name>   # e.g. classificationFaild for the 9% multiclass re
 ## Conflicts of Interest
 
 The authors declare no conflicts of interest.
+
+## License
+
+The software and source code in this repository are licensed under the [Apache License 2.0](LICENSE).
+
+**Note on Publications:** This repository serves as the standalone technical proof of concept for associated lab work. Any academic papers, theses, or external publications referencing or derived from this codebase are distributed under their own respective licenses and are explicitly not covered by this software license.
